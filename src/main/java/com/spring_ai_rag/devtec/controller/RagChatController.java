@@ -6,8 +6,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.MalformedURLException;
-
 @RestController
 @RequiredArgsConstructor
 public class RagChatController {
@@ -27,8 +25,7 @@ public class RagChatController {
     @GetMapping("/chat")
     public ResponseEntity<String> askQuestion(@RequestParam String question) {
         try {
-            String response = ragChatService.chat(question);
-            return ResponseEntity.ok(response);
+            return ResponseEntity.ok(ragChatService.chat(question));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao gerar resposta: " + e.getMessage());
         }

@@ -10,6 +10,7 @@ import org.springframework.ai.reader.pdf.PagePdfDocumentReader;
 import org.springframework.ai.reader.pdf.config.PdfDocumentReaderConfig;
 import org.springframework.ai.transformer.splitter.TokenTextSplitter;
 import org.springframework.ai.vectorstore.VectorStore;
+import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.FileUrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.core.io.Resource;
@@ -28,8 +29,8 @@ public class RagChatService {
 
     private final RetrievalAugmentationAdvisor retrievalAugmentationAdvisor;
 
-    public void ingestPdf(String url) throws MalformedURLException {
-        Resource resource = new FileUrlResource(new URL(url));
+    public void ingestPdf(String url)  {
+        Resource resource = new DefaultResourceLoader().getResource(url);
 
         PagePdfDocumentReader reader = new PagePdfDocumentReader(resource, PdfDocumentReaderConfig.builder()
                 .withPageExtractedTextFormatter(ExtractedTextFormatter.builder()
@@ -42,7 +43,7 @@ public class RagChatService {
         TokenTextSplitter tokenTextSplitter = new TokenTextSplitter();
 
         List<Document> splitDocuments = tokenTextSplitter.split(reader.read());
-        for (Document splitDocument: splitDocuments) { // footnotes
+        for (Document splitDocument: splitDocuments) {
             splitDocument.getMetadata().put("filename", resource.getFilename());
             splitDocument.getMetadata().put("version", 1);
         }
