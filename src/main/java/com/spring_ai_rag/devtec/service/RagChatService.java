@@ -29,6 +29,14 @@ public class RagChatService {
 
     private final RetrievalAugmentationAdvisor retrievalAugmentationAdvisor;
 
+    private static final String PROMPT = String.join("\n",
+            "Você é o atendente virtual do Hotel Paraíso Azul.",
+            "Responda de forma clara, amigável e objetiva dúvidas de clientes com base na política de reservas, cancelamentos e outras informações disponíveis.",
+            "",
+            "Se a pergunta não estiver diretamente relacionada às informações disponíveis, responda gentilmente que não tem essa informação,",
+            "e sugira entrar em contato com a recepção pelo WhatsApp: (99) 99999-9999."
+    );
+
     public void ingestPdf(String url)  {
         Resource resource = new DefaultResourceLoader().getResource(url);
 
@@ -52,7 +60,7 @@ public class RagChatService {
     }
 
     public String chat(String question) {
-        return chatClient.prompt()
+        return chatClient.prompt(PROMPT)
                 .advisors(retrievalAugmentationAdvisor)
                 .user(question)
                 .call()
