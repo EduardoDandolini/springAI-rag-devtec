@@ -1,7 +1,6 @@
 package com.spring_ai_rag.devtec.service;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.RetrievalAugmentationAdvisor;
 import org.springframework.ai.document.Document;
@@ -11,12 +10,9 @@ import org.springframework.ai.reader.pdf.config.PdfDocumentReaderConfig;
 import org.springframework.ai.transformer.splitter.TokenTextSplitter;
 import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.core.io.DefaultResourceLoader;
-import org.springframework.core.io.FileUrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.core.io.Resource;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -60,6 +56,12 @@ public class RagChatService {
     }
 
     public String chat(String question) {
+        List<Document> results = vectorStore.similaritySearch(question);
+
+        if (results == null || results.isEmpty()) {
+            return "Desculpe, não tenho essa informação. Por favor, entre em contato com a recepção pelo WhatsApp: (99) 99999-9999.";
+        }
+
         return chatClient.prompt(PROMPT)
                 .advisors(retrievalAugmentationAdvisor)
                 .user(question)

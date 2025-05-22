@@ -10,7 +10,7 @@ services:
       - ollama_data:/root/.ollama
     restart: unless-stopped
     entrypoint: >
-      /bin/sh -c "ollama serve & sleep 5 && ollama run mistral && tail -f /dev/null"
+      /bin/sh -c "ollama serve & sleep 5 && ollama run llama3.2 && tail -f /dev/null"
 
   postgres:
     image: pgvector/pgvector:pg13
