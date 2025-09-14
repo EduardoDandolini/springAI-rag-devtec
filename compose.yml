@@ -25,6 +25,21 @@ services:
       - pgvector_data:/var/lib/postgresql/data
     restart: unless-stopped
 
+  app:
+    image: eduardodandolini/spring-ai-chatbot:latest
+    container_name: spring-ai-chatbot
+    depends_on:
+      - postgres
+      - ollama
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/postgres
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: 123
+      OLLAMA_HOST: http://ollama:11434
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+
 volumes:
   ollama_data:
   pgvector_data:
