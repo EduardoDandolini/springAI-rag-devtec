@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>AI Chatbot</title>
+    <link rel="stylesheet" th:href="@{/style.css}">
+</head>
+<body>
+<div class="chat-container">
+    <h2>AI Chatbot</h2>
+
+    <!-- Upload de PDF -->
+    <form id="pdfForm" onsubmit="ingestPdf(event)">
+        <input type="text" id="pdfUrl" placeholder="Digite a URL do PDF..." required>
+        <button type="submit">Enviar PDF</button>
+    </form>
+
+    <!-- Área do chat -->
+    <div id="chatBox" class="chat-box"></div>
+
+    <!-- Input do usuário -->
+    <form id="chatForm" onsubmit="askQuestion(event)">
+        <input type="text" id="question" placeholder="Digite sua pergunta..." required>
+        <button type="submit">Enviar</button>
+    </form>
+</div>
+
+<script>
+    async function ingestPdf(event) {
+        event.preventDefault();
+        const url = document.getElementById("pdfUrl").value;
+        const response = await fetch(`/pdf?url=${encodeURIComponent(url)}`, { method: "POST" });
+        const text = await response.text();
+        alert(text);
+    }
+
+    async function askQuestion(event) {
+        event.preventDefault();
+        const questionInput = document.getElementById("question");
+        const question = questionInput.value;
+        addMessage("Você", question);
+
+        const response = await fetch(`/chat?question=${encodeURIComponent(question)}`);
+        const answer = await response.text();
+
+        addMessage("Bot", answer);
+        questionInput.value = "";
+    }
+
+    function addMessage(sender, message) {
+        const chatBox = document.getElementById("chatBox");
+        const msgDiv = document.createElement("div");
+        msgDiv.classList.add("message");
+        msgDiv.innerHTML = `<b>${sender}:</b> ${message}`;
+        chatBox.appendChild(msgDiv);
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+</script>
+</body>
+</html>
