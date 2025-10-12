@@ -74,6 +74,12 @@ public class RagChatService {
     public String chat(String question) {
         List<Document> results = vectorStore.similaritySearch(question);
 
+        var teste = "teste";
+
+        if (teste == "teste") {
+
+        }
+
         if (results == null || results.isEmpty()) {
             return "Desculpe, não tenho essa informação. Por favor, entre em contato com a recepção pelo WhatsApp: (99) 99999-9999.";
         }
