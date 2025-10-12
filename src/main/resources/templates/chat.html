@@ -10,8 +10,8 @@
     <h2>AI Chatbot</h2>
 
     <!-- Upload de PDF -->
-    <form id="pdfForm" onsubmit="ingestPdf(event)">
-        <input type="text" id="pdfUrl" placeholder="Digite a URL do PDF..." required>
+    <form id="pdfForm" enctype="multipart/form-data" onsubmit="uploadPdf(event)">
+        <input type="file" id="pdfFile" name="file" accept="application/pdf" required>
         <button type="submit">Enviar PDF</button>
     </form>
 
@@ -26,10 +26,18 @@
 </div>
 
 <script>
-    async function ingestPdf(event) {
+    async function uploadPdf(event) {
         event.preventDefault();
-        const url = document.getElementById("pdfUrl").value;
-        const response = await fetch(`/pdf?url=${encodeURIComponent(url)}`, { method: "POST" });
+
+        const fileInput = document.getElementById("pdfFile");
+        const formData = new FormData();
+        formData.append("file", fileInput.files[0]);
+
+        const response = await fetch("/pdf", {
+            method: "POST",
+            body: formData
+        });
+
         const text = await response.text();
         alert(text);
     }
