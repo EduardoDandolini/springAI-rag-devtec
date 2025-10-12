@@ -1,0 +1,32 @@
+name: AI Code Review
+
+on:
+  pull_request:
+    branches:
+      - master
+  push:
+    branches:
+      - master
+
+jobs:
+  ai_review:
+    name: Code Review com IA
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Configurar Docker Compose
+        run: |
+          docker compose -f ai_review/docker-compose.yml up --build --abort-on-container-exit
+
+      - name: Publicar resultado no PR
+        if: github.event_name == 'pull_request'
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: ai-review
+          message: |
+            🤖 **Resultado da revisão com IA**
+            O container `reviewer` analisou o último commit.
+            Verifique os logs na aba **Actions** para ver o feedback detalhado.

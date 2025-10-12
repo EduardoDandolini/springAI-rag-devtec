@@ -1,0 +1,25 @@
+version: '3.9'
+
+services:
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama-data:/root/.ollama
+    restart: unless-stopped
+
+  reviewer:
+    build: .
+    depends_on:
+      - ollama
+    environment:
+      - OLLAMA_URL=http://ollama:11434
+    volumes:
+      - ..:/repo
+    working_dir: /repo
+    command: ["python", "ai_review/ai_review.py"]
+
+volumes:
+  ollama-data:
