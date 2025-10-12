@@ -5,6 +5,10 @@ on:
     branches:
       - master
 
+permissions:
+  pull-requests: write
+  contents: read
+
 jobs:
   ai_review:
     name: Code Review com IA
